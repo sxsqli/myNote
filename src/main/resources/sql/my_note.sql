@@ -1,0 +1,16 @@
+CREATE DATABASE my_note;
+USE my_note;
+CREATE TABLE user (
+	uid INT PRIMARY KEY AUTO_INCREMENT,
+	username VARCHAR(16) NOT NULL UNIQUE,
+	password CHAR(41) NOT NULL,
+	registertime TIMESTAMP
+);
+CREATE TABLE note_file (
+	nid INT PRIMARY KEY AUTO_INCREMENT,
+	filename VARCHAR(100) NOT NULL,
+	path VARCHAR(200) NOT NULL,
+	submittime TIMESTAMP,
+	userid INT,
+	FOREIGN KEY (userid) REFERENCES user (uid)
+);

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sxsqli.mapper.NoteFileMapper">
+    <insert id="insert" parameterType="NoteFile">
+        INSERT INTO note_file (filename, path, userid) VALUES (#{filename},#{path},#{userid})
+    </insert>
+
+    <delete id="delete" parameterType="NoteFile">
+        DELETE FROM note_file
+        <where>
+            <choose>
+                <when test="nid!=null">
+                    AND nid = #{nid}
+                </when>
+                <otherwise>
+                    <if test="filename!=null">
+                        AND filename = #{filename}
+                    </if>
+                    <if test="userid!=null">
+                        AND userid = #{userid}
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+    </delete>
+
+    <resultMap id="noteMap" type="NoteFile">
+        <id column="nid" property="nid"/>
+        <association property="user" column="userid" select="finduser"/>
+    </resultMap>
+
+    <select id="finduser" resultType="User" parameterType="int">
+        SELECT * FROM user WHERE uid = #{uid}
+    </select>
+
+    <select id="findAll" resultMap="noteMap">
+        SELECT * FROM note_file
+    </select>
+
+    <select id="findByNoteFile" resultMap="noteMap" parameterType="NoteFile">
+        SELECT * FROM note_file
+        <where>
+            <choose>
+                <when test="nid!=null">
+                    AND nid = #{nid}
+                </when>
+                <otherwise>
+                    <if test="filename!=null">
+                        AND filename = #{filename}
+                    </if>
+                    <if test="userid!=null">
+                        AND userid = #{userid}
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="findLike" resultMap="noteMap" parameterType="String">
+        SELECT * FROM note_file WHERE filename LIKE #{filename}
+    </select>
+</mapper>
